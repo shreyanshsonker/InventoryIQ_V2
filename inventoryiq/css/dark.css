@@ -1,0 +1,33 @@
+/* ============================================================
+   InventoryIQ v2.0 — Dark Mode Overrides
+   Applied via body.dark-mode class toggle
+   ============================================================ */
+
+/* The base theme is already dark. These overrides adjust
+   contrast and brightness for user preference. */
+
+body.dark-mode {
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-body: #B0B8C8;
+}
+
+body.dark-mode .top-bar {
+    background: rgba(2, 4, 12, 0.9);
+}
+
+body.dark-mode .capsule-nav {
+    background: rgba(8, 5, 20, 0.85);
+}
+
+body.dark-mode .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-mode .data-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+body.dark-mode .data-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.03);
+}
