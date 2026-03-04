@@ -86,8 +86,35 @@ if (isset($_SESSION['full_name'])) {
       <i data-lucide="moon" class="theme-icon-dark" style="width:20px;height:20px;"></i>
     </button>
     <?php if (isset($_SESSION['full_name'])): ?>
-    <div class="user-avatar" title="<?php echo htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8'); ?>">
-      <?php echo htmlspecialchars($user_initials, ENT_QUOTES, 'UTF-8'); ?>
+    <div class="avatar-dropdown-wrap" id="avatar-dropdown-wrap">
+      <button class="user-avatar" id="avatar-btn" onclick="toggleAvatarDropdown()" title="<?php echo htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8'); ?>">
+        <?php echo htmlspecialchars($user_initials, ENT_QUOTES, 'UTF-8'); ?>
+      </button>
+      <div class="avatar-dropdown" id="avatar-dropdown">
+        <div class="avatar-dropdown-header">
+          <div class="avatar-dropdown-name"><?php echo htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8'); ?></div>
+          <div class="avatar-dropdown-role"><?php echo htmlspecialchars(str_replace('_', ' ', ucwords($_SESSION['role'] ?? 'user', '_')), ENT_QUOTES, 'UTF-8'); ?></div>
+        </div>
+        <div class="avatar-dropdown-divider"></div>
+        <a href="<?php echo $is_sa ? '/inventoryiq/superadmin/dashboard.php' : '/inventoryiq/dashboard/index.php'; ?>" class="avatar-dropdown-item">
+          <i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> Dashboard
+        </a>
+        <?php if (!$is_sa): ?>
+        <a href="/inventoryiq/notifications/index.php" class="avatar-dropdown-item">
+          <i data-lucide="bell" style="width:16px;height:16px;"></i> Notifications
+          <?php if ($unread_count > 0): ?>
+            <span class="avatar-dropdown-badge"><?php echo $unread_count > 9 ? '9+' : $unread_count; ?></span>
+          <?php endif; ?>
+        </a>
+        <?php endif; ?>
+        <a href="/inventoryiq/settings/index.php" class="avatar-dropdown-item">
+          <i data-lucide="settings" style="width:16px;height:16px;"></i> Settings
+        </a>
+        <div class="avatar-dropdown-divider"></div>
+        <a href="/inventoryiq/logout.php" class="avatar-dropdown-item avatar-dropdown-logout">
+          <i data-lucide="log-out" style="width:16px;height:16px;"></i> Logout
+        </a>
+      </div>
     </div>
     <?php endif; ?>
   </div>

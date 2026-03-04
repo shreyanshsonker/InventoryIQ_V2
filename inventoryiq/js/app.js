@@ -104,6 +104,29 @@ function toggleDarkMode() {
 })();
 
 /* ============================================================
+   Avatar Dropdown Toggle
+   ============================================================ */
+function toggleAvatarDropdown() {
+    var dropdown = document.getElementById('avatar-dropdown');
+    if (!dropdown) return;
+    dropdown.classList.toggle('open');
+
+    /* Re-init Lucide for dropdown icons */
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+/* Close dropdown when clicking outside */
+document.addEventListener('click', function (e) {
+    var wrap = document.getElementById('avatar-dropdown-wrap');
+    var dropdown = document.getElementById('avatar-dropdown');
+    if (wrap && dropdown && !wrap.contains(e.target)) {
+        dropdown.classList.remove('open');
+    }
+});
+
+/* ============================================================
    3D Card Tilt Effect
    ============================================================ */
 function initTiltEffect() {

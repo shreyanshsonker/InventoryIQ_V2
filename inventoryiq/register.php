@@ -12,7 +12,17 @@ $success = '';
 $form = [
     'company_name' => '', 'owner_name' => '', 'email' => '',
     'phone' => '', 'address' => '', 'handle' => '',
-    'password' => '', 'confirm_password' => ''
+    'password' => '', 'confirm_password' => '',
+    'security_question' => '', 'security_answer' => ''
+];
+
+// Predefined security questions
+$security_questions = [
+    'What is your mother\'s maiden name?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+    'What is your favourite food?',
+    'What was the name of your first school?',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validation
     if (empty($form['company_name']) || empty($form['owner_name']) || empty($form['email']) ||
-        empty($form['handle']) || empty($form['password']) || empty($form['confirm_password'])) {
+        empty($form['handle']) || empty($form['password']) || empty($form['confirm_password']) ||
+        empty($form['security_question']) || empty($form['security_answer'])) {
         $error = 'All required fields must be filled.';
     } elseif (!filter_var($form['email'], FILTER_VALIDATE_EMAIL)) {
         $error = 'Please enter a valid email address.';
@@ -85,15 +96,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mysqli_stmt_close($cat_stmt);
 
                 // 3. Insert company admin user
-                $password_hash = password_hash($form['password'], PASSWORD_BCRYPT);
+                $password_hash = password_hash($form['password'], PASSWORD_BCRYPT, ['cost' => 12]);
                 $login_identifier = $form['email']; // Company Admin uses email as login
+                $sec_q = $form['security_question'];
+                $sec_a_hash = password_hash(strtolower(trim($form['security_answer'])), PASSWORD_BCRYPT, ['cost' => 12]);
                 $user_stmt = mysqli_prepare($conn,
-                    'INSERT INTO users (company_id, warehouse_id, full_name, login_identifier, password_hash, role)
-                     VALUES (?, NULL, ?, ?, ?, ?)'
+                    'INSERT INTO users (company_id, warehouse_id, full_name, login_identifier, password_hash, role, security_question, security_answer_hash)
+                     VALUES (?, NULL, ?, ?, ?, ?, ?, ?)'
                 );
                 $admin_role = 'company_admin';
-                mysqli_stmt_bind_param($user_stmt, 'issss',
-                    $company_id, $form['owner_name'], $login_identifier, $password_hash, $admin_role
+                mysqli_stmt_bind_param($user_stmt, 'issssss',
+                    $company_id, $form['owner_name'], $login_identifier, $password_hash, $admin_role, $sec_q, $sec_a_hash
                 );
                 mysqli_stmt_execute($user_stmt);
                 $user_id = mysqli_insert_id($conn);
@@ -200,6 +213,27 @@ mysqli_close($conn);
           <label class="form-label" for="confirm_password">Confirm Password <span class="required">*</span></label>
           <input type="password" id="confirm_password" name="confirm_password" class="glass-input"
                  placeholder="Re-enter password" required>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="security_question">Security Question <span class="required">*</span></label>
+          <select id="security_question" name="security_question" class="glass-select" required>
+            <option value="">Select a question</option>
+            <?php foreach ($security_questions as $q): ?>
+              <option value="<?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?>"
+                <?php echo $form['security_question'] === $q ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="security_answer">Security Answer <span class="required">*</span></label>
+          <input type="text" id="security_answer" name="security_answer" class="glass-input"
+                 placeholder="Your answer" value="<?php echo htmlspecialchars($form['security_answer'], ENT_QUOTES, 'UTF-8'); ?>" required>
+          <small style="color:var(--text-muted);font-size:11px;">Used to reset your password. Case-insensitive.</small>
         </div>
       </div>
 

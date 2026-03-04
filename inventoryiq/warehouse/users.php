@@ -13,6 +13,15 @@ $wh_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $page_title = 'Warehouse Users';
 $error = '';
 
+// Predefined security questions
+$security_questions = [
+    'What is your mother\'s maiden name?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+    'What is your favourite food?',
+    'What was the name of your first school?',
+];
+
 // Verify warehouse belongs to company
 $stmt = mysqli_prepare($conn, 'SELECT warehouse_name, handle FROM warehouses WHERE warehouse_id = ? AND company_id = ?');
 mysqli_stmt_bind_param($stmt, 'ii', $wh_id, $company_id);
@@ -29,8 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $login_id = trim($_POST['login_identifier'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $user_role = in_array($_POST['role'] ?? '', ['wh_manager', 'wh_staff']) ? $_POST['role'] : 'wh_staff';
+        $sec_q = trim($_POST['security_question'] ?? '');
+        $sec_a = trim($_POST['security_answer'] ?? '');
 
-        if (empty($full_name) || empty($login_id) || empty($password)) {
+        if (empty($full_name) || empty($login_id) || empty($password) || empty($sec_q) || empty($sec_a)) {
             $error = 'All fields are required.';
         } elseif (strlen($password) < 8) {
             $error = 'Password must be at least 8 characters.';
@@ -45,11 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             mysqli_stmt_close($dup);
 
             if (empty($error)) {
-                $hash = password_hash($password, PASSWORD_BCRYPT);
+                $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+                $sec_a_hash = password_hash(strtolower($sec_a), PASSWORD_BCRYPT, ['cost' => 12]);
                 $stmt = mysqli_prepare($conn,
-                    'INSERT INTO users (company_id, warehouse_id, full_name, login_identifier, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)'
+                    'INSERT INTO users (company_id, warehouse_id, full_name, login_identifier, password_hash, role, security_question, security_answer_hash)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
                 );
-                mysqli_stmt_bind_param($stmt, 'iissss', $company_id, $wh_id, $full_name, $login_id, $hash, $user_role);
+                mysqli_stmt_bind_param($stmt, 'iissssss', $company_id, $wh_id, $full_name, $login_id, $hash, $user_role, $sec_q, $sec_a_hash);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
 
@@ -132,6 +145,19 @@ require_once '../includes/header.php';
           <option value="wh_staff">Warehouse Staff</option>
           <option value="wh_manager">Warehouse Manager</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Security Question <span class="required">*</span></label>
+        <select name="security_question" class="glass-select" required>
+          <option value="">Select a question</option>
+          <?php foreach ($security_questions as $q): ?>
+            <option value="<?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Security Answer <span class="required">*</span></label>
+        <input type="text" name="security_answer" class="glass-input" placeholder="Case-insensitive" required>
       </div>
       <button type="submit" class="btn btn-primary">
         <i data-lucide="user-plus" style="width:16px;height:16px;"></i> Add User

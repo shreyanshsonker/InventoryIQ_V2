@@ -8,10 +8,16 @@ require_once '../auth/check.php';
 require_once '../includes/audit.php';
 
 $page_title = 'Dashboard';
-$role = $_SESSION['role'];
-$company_id = $_SESSION['company_id'];
-$warehouse_id = $_SESSION['warehouse_id'];
-$full_name = $_SESSION['full_name'];
+$role = $_SESSION['role'] ?? '';
+$company_id = $_SESSION['company_id'] ?? 0;
+$warehouse_id = $_SESSION['warehouse_id'] ?? 0;
+$full_name = $_SESSION['full_name'] ?? 'User';
+
+// Super Admin should use their own dashboard
+if ($role === 'super_admin') {
+    header('Location: /inventoryiq/superadmin/dashboard.php');
+    exit;
+}
 
 // Time-aware greeting
 $hour = (int)date('H');

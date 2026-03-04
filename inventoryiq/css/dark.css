@@ -313,3 +313,51 @@ body.light-mode .action-icon.delete:hover {
 body.light-mode .mono {
     color: #6366F1;
 }
+
+/* Avatar Dropdown */
+body.light-mode .avatar-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .avatar-dropdown-name {
+    color: #1E293B;
+}
+
+body.light-mode .avatar-dropdown-role {
+    color: #64748B;
+}
+
+body.light-mode .avatar-dropdown-divider {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+body.light-mode .avatar-dropdown-item {
+    color: #334155;
+}
+
+body.light-mode .avatar-dropdown-item:hover {
+    background: rgba(99, 102, 241, 0.06);
+    color: #1E293B;
+}
+
+body.light-mode .avatar-dropdown-item i {
+    color: #94A3B8;
+}
+
+body.light-mode .avatar-dropdown-item:hover i {
+    color: #4F46E5;
+}
+
+body.light-mode .avatar-dropdown-logout {
+    color: #EF4444;
+}
+
+body.light-mode .avatar-dropdown-logout:hover {
+    background: rgba(239, 68, 68, 0.06);
+}
+
+body.light-mode .avatar-dropdown-logout:hover i {
+    color: #EF4444;
+}

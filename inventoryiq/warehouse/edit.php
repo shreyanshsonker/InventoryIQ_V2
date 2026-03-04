@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     capacity_limit = ?, priority_rank = ?, low_stock_override = ?, status = ?
              WHERE warehouse_id = ? AND company_id = ?'
         );
-        mysqli_stmt_bind_param($stmt, 'sssiiiisi',
+        mysqli_stmt_bind_param($stmt, 'sssiiisii',
             $warehouse_name, $location, $contact_person,
             $capacity_limit, $priority_rank, $low_stock_override, $status,
             $wh_id, $company_id

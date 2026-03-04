@@ -17,6 +17,10 @@ if (isset($_GET['timeout'])) {
 if (isset($_GET['suspended'])) {
     $error = 'Your company account has been suspended. Contact support.';
 }
+if (isset($_GET['reset'])) {
+    $error = ''; // Clear any error
+}
+$reset_success = isset($_GET['reset']);
 
 // POST: Login attempt
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -134,6 +138,14 @@ mysqli_close($conn);
       <span class="text-gradient text-gradient-glow">InventoryIQ</span>
     </div>
     <p class="login-subtitle">Sign in to your workspace</p>
+
+    <!-- Success Message -->
+    <?php if ($reset_success): ?>
+      <div class="alert-banner alert-success" style="margin-bottom: var(--space-6);">
+        <i data-lucide="check-circle" style="width:18px;height:18px;flex-shrink:0;"></i>
+        <span>Password reset successfully. Please sign in with your new password.</span>
+      </div>
+    <?php endif; ?>
 
     <!-- Error Message -->
     <?php if (!empty($error)): ?>

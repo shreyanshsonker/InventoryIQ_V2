@@ -12,6 +12,15 @@ $error = '';
 $success = '';
 $role = $_SESSION['role'];
 
+// Predefined security questions
+$security_questions = [
+    'What is your mother\'s maiden name?',
+    'What was the name of your first pet?',
+    'What city were you born in?',
+    'What is your favourite food?',
+    'What was the name of your first school?',
+];
+
 // Super Admin settings redirect
 if ($role === 'super_admin') {
     // SA password change
@@ -44,7 +53,7 @@ if ($role === 'super_admin') {
     }
 } else {
     // Company user settings
-    $stmt = mysqli_prepare($conn, 'SELECT full_name, login_identifier FROM users WHERE user_id = ?');
+    $stmt = mysqli_prepare($conn, 'SELECT full_name, login_identifier, security_question FROM users WHERE user_id = ?');
     mysqli_stmt_bind_param($stmt, 'i', $_SESSION['user_id']);
     mysqli_stmt_execute($stmt);
     $user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -93,6 +102,34 @@ if ($role === 'super_admin') {
             mysqli_stmt_close($upd);
             $success = 'Password changed successfully.';
             write_audit_log($conn, $_SESSION['user_id'], $role, $_SESSION['company_id'], $_SESSION['warehouse_id'], 'PASSWORD_CHANGE', 'Changed password');
+        }
+    }
+
+    // Change security question
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_security'])) {
+        $current_pw = $_POST['verify_password'] ?? '';
+        $new_q = trim($_POST['new_security_question'] ?? '');
+        $new_a = trim($_POST['new_security_answer'] ?? '');
+
+        $pw_stmt = mysqli_prepare($conn, 'SELECT password_hash FROM users WHERE user_id = ?');
+        mysqli_stmt_bind_param($pw_stmt, 'i', $_SESSION['user_id']);
+        mysqli_stmt_execute($pw_stmt);
+        $pw_row = mysqli_fetch_assoc(mysqli_stmt_get_result($pw_stmt));
+        mysqli_stmt_close($pw_stmt);
+
+        if (!password_verify($current_pw, $pw_row['password_hash'])) {
+            $error = 'Password verification failed.';
+        } elseif (empty($new_q) || empty($new_a)) {
+            $error = 'Security question and answer are required.';
+        } else {
+            $a_hash = password_hash(strtolower($new_a), PASSWORD_BCRYPT, ['cost' => 12]);
+            $upd = mysqli_prepare($conn, 'UPDATE users SET security_question = ?, security_answer_hash = ? WHERE user_id = ?');
+            mysqli_stmt_bind_param($upd, 'ssi', $new_q, $a_hash, $_SESSION['user_id']);
+            mysqli_stmt_execute($upd);
+            mysqli_stmt_close($upd);
+            $user['security_question'] = $new_q;
+            $success = 'Security question updated.';
+            write_audit_log($conn, $_SESSION['user_id'], $role, $_SESSION['company_id'], $_SESSION['warehouse_id'], 'SECURITY_Q_CHANGE', 'Changed security question');
         }
     }
 }
@@ -169,6 +206,42 @@ require_once '../includes/header.php';
       </button>
     </form>
   </div>
+
+  <?php if ($role !== 'super_admin'): ?>
+  <!-- Change Security Question -->
+  <div class="glass-card-static">
+    <h3 class="section-title mb-4">
+      <i data-lucide="shield-question" style="width:18px;height:18px;display:inline;"></i> Security Question
+    </h3>
+    <?php if (!empty($user['security_question'])): ?>
+      <p style="color:var(--text-muted);font-size:12px;margin-bottom:12px;">Current: <strong style="color:var(--text-body);"><?php echo htmlspecialchars($user['security_question'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+    <?php else: ?>
+      <p style="color:var(--accent-amber);font-size:12px;margin-bottom:12px;">⚠ No security question set. Set one to enable password reset.</p>
+    <?php endif; ?>
+    <form method="POST" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="form-group">
+        <label class="form-label">New Question</label>
+        <select name="new_security_question" class="glass-select" required>
+          <option value="">Select a question</option>
+          <?php foreach ($security_questions as $q): ?>
+            <option value="<?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($q, ENT_QUOTES, 'UTF-8'); ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">New Answer</label>
+        <input type="text" name="new_security_answer" class="glass-input" placeholder="Case-insensitive" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Verify Password</label>
+        <input type="password" name="verify_password" class="glass-input" placeholder="Enter current password" required>
+      </div>
+      <button type="submit" name="change_security" value="1" class="btn btn-primary">
+        <i data-lucide="shield-check" style="width:16px;height:16px;"></i> Update Security Question
+      </button>
+    </form>
+  </div>
+  <?php endif; ?>
 
   <!-- Logout -->
   <div class="glass-card-static" style="display:flex;align-items:center;justify-content:space-between;">

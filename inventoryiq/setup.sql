@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS users (
   failed_attempts  TINYINT UNSIGNED DEFAULT 0,
   locked_until     DATETIME,
   remember_token   VARCHAR(64),
+  security_question VARCHAR(200),
+  security_answer_hash VARCHAR(255),
   status           ENUM('active','inactive') DEFAULT 'active',
   created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (company_id)   REFERENCES companies(company_id) ON DELETE CASCADE,
