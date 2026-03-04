@@ -1,33 +1,315 @@
 /* ============================================================
-   InventoryIQ v2.0 — Dark Mode Overrides
-   Applied via body.dark-mode class toggle
+   InventoryIQ v2.0 — Light / Dark Mode Toggle
+   Default = Dark (Aurora). Toggle adds body.light-mode.
    ============================================================ */
 
-/* The base theme is already dark. These overrides adjust
-   contrast and brightness for user preference. */
-
-body.dark-mode {
-    --glass-bg: rgba(255, 255, 255, 0.04);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --text-body: #B0B8C8;
+/* ---- Toggle Button ---- */
+.theme-toggle-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: #E2E8FF;
+    overflow: hidden;
 }
 
-body.dark-mode .top-bar {
-    background: rgba(2, 4, 12, 0.9);
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+    transform: scale(1.05);
 }
 
-body.dark-mode .capsule-nav {
-    background: rgba(8, 5, 20, 0.85);
+/* Sun icon visible by default (shows "switch to light") */
+.theme-icon-light {
+    display: block;
+    color: #FCD34D;
 }
 
-body.dark-mode .stat-card {
-    background: rgba(255, 255, 255, 0.03);
+.theme-icon-dark {
+    display: none;
+    color: #A78BFA;
 }
 
-body.dark-mode .data-table tbody tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.01);
+/* When light mode is active, show moon icon (switch to dark) */
+body.light-mode .theme-icon-light {
+    display: none;
 }
 
-body.dark-mode .data-table tbody tr:nth-child(odd) {
-    background: rgba(255, 255, 255, 0.03);
+body.light-mode .theme-icon-dark {
+    display: block;
+}
+
+/* ---- Light Mode Overrides ---- */
+body.light-mode {
+    background: linear-gradient(135deg, #F0F4FF 0%, #E8ECFA 30%, #F5F3FF 60%, #EFF6FF 100%) !important;
+    color: #1E293B;
+}
+
+/* Remove aurora animation in light mode */
+body.light-mode::before,
+body.light-mode::after {
+    display: none !important;
+}
+
+body.light-mode .top-bar {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .top-bar-title {
+    color: #1E293B;
+}
+
+body.light-mode .theme-toggle-btn {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+    color: #4F46E5;
+}
+
+body.light-mode .theme-toggle-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+body.light-mode .notification-bell {
+    color: #475569;
+}
+
+body.light-mode .user-avatar {
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    color: #fff;
+}
+
+/* Glass cards → frosted white */
+body.light-mode .glass-card,
+body.light-mode .glass-card-static,
+body.light-mode .stat-card,
+body.light-mode .login-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.1) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Typography */
+body.light-mode .stat-number {
+    color: #1E293B;
+}
+
+body.light-mode .stat-label {
+    color: #64748B;
+}
+
+body.light-mode .section-title {
+    color: #1E293B;
+}
+
+body.light-mode .label,
+body.light-mode .form-label {
+    color: #475569;
+}
+
+body.light-mode p,
+body.light-mode span {
+    color: inherit;
+}
+
+/* Override muted text */
+body.light-mode .notification-body,
+body.light-mode .login-subtitle {
+    color: #64748B;
+}
+
+/* Capsule Nav */
+body.light-mode .capsule-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .capsule-item {
+    color: #64748B;
+}
+
+body.light-mode .capsule-item.active {
+    color: #4F46E5;
+}
+
+body.light-mode .capsule-item:hover {
+    color: #4F46E5;
+}
+
+/* Inputs */
+body.light-mode .glass-input,
+body.light-mode .glass-select,
+body.light-mode .glass-textarea {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: #1E293B;
+}
+
+body.light-mode .glass-input::placeholder {
+    color: #94A3B8;
+}
+
+body.light-mode .glass-input:focus,
+body.light-mode .glass-select:focus,
+body.light-mode .glass-textarea:focus {
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Buttons */
+body.light-mode .btn-ghost {
+    color: #4F46E5;
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+body.light-mode .btn-ghost:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+/* Tables */
+body.light-mode .data-table-container {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+body.light-mode .data-table thead th {
+    background: rgba(99, 102, 241, 0.06);
+    color: #475569;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+}
+
+body.light-mode .data-table tbody tr {
+    border-bottom: 1px solid rgba(99, 102, 241, 0.06);
+}
+
+body.light-mode .data-table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.04);
+}
+
+body.light-mode .data-table td {
+    color: #334155;
+}
+
+/* Badges */
+body.light-mode .badge {
+    border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+/* Notification cards */
+body.light-mode .notification-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+body.light-mode .notification-title {
+    color: #1E293B;
+}
+
+/* Alert banners */
+body.light-mode .alert-banner {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* Modal */
+body.light-mode .modal-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: #1E293B;
+}
+
+body.light-mode .modal-title {
+    color: #1E293B;
+}
+
+body.light-mode .modal-body {
+    color: #475569;
+}
+
+/* Toast */
+body.light-mode .toast {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: #1E293B;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination */
+body.light-mode .page-btn {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(99, 102, 241, 0.15);
+    color: #475569;
+}
+
+body.light-mode .page-btn.active {
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    color: #fff;
+}
+
+/* Upload zone */
+body.light-mode .upload-zone {
+    background: rgba(99, 102, 241, 0.04);
+    border: 2px dashed rgba(99, 102, 241, 0.2);
+}
+
+/* Gradient text still needs to be visible */
+body.light-mode .text-gradient {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Login card specific */
+body.light-mode .login-logo .text-gradient,
+body.light-mode .login-logo .text-gradient-glow {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+}
+
+/* Error page */
+body.light-mode .error-code {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Action icons */
+body.light-mode .action-icon {
+    color: #64748B;
+}
+
+body.light-mode .action-icon.edit:hover {
+    color: #4F46E5;
+}
+
+body.light-mode .action-icon.delete:hover {
+    color: #EF4444;
+}
+
+/* Monospace text */
+body.light-mode .mono {
+    color: #6366F1;
 }

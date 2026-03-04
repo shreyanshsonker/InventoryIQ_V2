@@ -80,6 +80,11 @@ if (isset($_SESSION['full_name'])) {
       <?php endif; ?>
     </button>
     <?php endif; ?>
+    <!-- Light/Dark Mode Toggle -->
+    <button class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Light/Dark Mode" id="theme-toggle">
+      <i data-lucide="sun" class="theme-icon-light" style="width:20px;height:20px;"></i>
+      <i data-lucide="moon" class="theme-icon-dark" style="width:20px;height:20px;"></i>
+    </button>
     <?php if (isset($_SESSION['full_name'])): ?>
     <div class="user-avatar" title="<?php echo htmlspecialchars($_SESSION['full_name'], ENT_QUOTES, 'UTF-8'); ?>">
       <?php echo htmlspecialchars($user_initials, ENT_QUOTES, 'UTF-8'); ?>

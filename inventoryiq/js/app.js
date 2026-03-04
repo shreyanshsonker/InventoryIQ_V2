@@ -80,20 +80,25 @@ function showToast(type, message) {
 }
 
 /* ============================================================
-   Dark Mode Toggle
+   Light / Dark Mode Toggle
    ============================================================ */
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    var isDark = document.body.classList.contains('dark-mode');
+    document.body.classList.toggle('light-mode');
+    var isLight = document.body.classList.contains('light-mode');
     try {
-        sessionStorage.setItem('darkMode', isDark ? '1' : '0');
+        localStorage.setItem('iqTheme', isLight ? 'light' : 'dark');
     } catch (e) { }
+
+    /* Re-init Lucide so sun/moon icons update */
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 (function () {
     try {
-        if (sessionStorage.getItem('darkMode') === '1') {
-            document.body.classList.add('dark-mode');
+        if (localStorage.getItem('iqTheme') === 'light') {
+            document.body.classList.add('light-mode');
         }
     } catch (e) { }
 })();
