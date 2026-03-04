@@ -287,6 +287,10 @@ mysqli_close($conn);
   </div>
 </div>
 
+<footer style="position: absolute; bottom: 24px; width: 100%; text-align: center; font-size: 13px; color: var(--text-muted); opacity: 0.8;">
+  &copy; <?php echo date('Y'); ?> InventoryIQ. All rights reserved. Engineered by Shreyansh Sonker.
+</footer>
+
 <script src="/inventoryiq/js/app.js"></script>
 </body>
 </html>
